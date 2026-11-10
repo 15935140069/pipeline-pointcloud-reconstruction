@@ -1,0 +1,37 @@
+
+# Python虚拟环境
+.venv/
+venv/
+
+# Python缓存
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# PyCharm配置
+.idea/
+
+# 点云原始数据
+*.e57
+*.rcp
+*.rcs
+*.rwp
+*.las
+*.laz
+*.ply
+*.pcd
+*.pts
+*.xyz
+
+# 本地数据
+data/
+outputs/
+
+# 本地配置
+.env
+.env.*
+config_local.py
+
+# 临时文件
+*.log
+*.tmp
