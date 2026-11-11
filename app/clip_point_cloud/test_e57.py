@@ -5,7 +5,7 @@ import pye57
 from pye57 import libe57
 import open3d as o3d
 
-file_path = Path("E57_PATH")
+file_path = Path("C:/3. 智能制造/深水-深技服-扫描/已配准.e57")
 
 with pye57.E57(str(file_path)) as e57:
 
@@ -33,7 +33,7 @@ with pye57.E57(str(file_path)) as e57:
         raise ValueError("该扫描站缺少XYZ或RGB字段")
 
     # 最多读取10万个点
-    capacity = min(100000, header.point_count)
+    capacity = min(10000000, header.point_count)
 
     if capacity == 0:
         raise ValueError("该扫描站没有点记录")
@@ -144,10 +144,33 @@ with pye57.E57(str(file_path)) as e57:
 
     print("是否包含颜色:", pcd.has_colors())
 
-    # 显示点云
-    o3d.visualization.draw_geometries(
-        [pcd],
-        window_name="E57 RGB Point Cloud Preview",
+    # # 显示点云
+    # o3d.visualization.draw_geometries(
+    #     [pcd],
+    #     window_name="E57 RGB Point Cloud Preview",
+    #     width=1280,
+    #     height=800
+    # )
+
+    print("\n=========点云裁剪=============")
+    print("鼠标左键: 旋转视角; \n鼠标滚轮: 缩放点云; \n按住K框选; 按住C裁剪点云; "
+          "\n按住F返回自由观察")
+    vis = o3d.visualization.VisualizerWithEditing()
+    vis.create_window(
+        window_name="E57点云裁剪窗口",
         width=1280,
         height=800
     )
+    vis.add_geometry(pcd)
+    vis.run()
+    cropped_pcd = vis.get_cropped_geometry()
+    vis.destroy_window()
+    if cropped_pcd is None or len(cropped_pcd) == 0:
+        print("点云为空")
+    else:
+        print("裁剪完成")
+        output_dir=Path(__file__).resolve().parent.parent / "outputs"
+        output_dir.mkdir(parents=True,exist_ok=True)
+        output_path =output_dir / 'roi_preview.ply'
+        success = o3d.io.write_point_cloud(str(output_path),cropped_pcd)
+
